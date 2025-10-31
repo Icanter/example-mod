@@ -22,7 +22,19 @@ jobs:
         run: |
           git clone --depth=1 https://github.com/geode-sdk/geode.git geode-sdk
 
+      - name: Download Geode CLI
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/geode-sdk/cli/releases/latest/download/geode.exe" -OutFile "geode-sdk/geode.exe"
+
+      - name: Install Geode SDK binaries
+        shell: pwsh
+        run: |
+          cd geode-sdk
+          ./geode.exe sdk install-binaries --platform Windows
+
       - name: Configure with MSVC
+        shell: pwsh
         run: |
           mkdir build
           cd build
@@ -30,11 +42,12 @@ jobs:
             -DGEODE_SDK="${{ github.workspace }}\\geode-sdk"
 
       - name: Build mod (Release)
+        shell: pwsh
         run: |
           cmake --build build --config Release
 
       - name: Upload Windows mod
         uses: actions/upload-artifact@v4
         with:
-          name: disable-glow-mod-windows
+          name: example-mod-windows
           path: build/Release/*.geode
