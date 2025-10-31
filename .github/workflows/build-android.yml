@@ -1,0 +1,39 @@
+name: Build Geode Mod (Android)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout mod repository
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build git
+
+      - name: Clone Geode SDK
+        run: |
+          git clone --depth=1 https://github.com/geode-sdk/geode.git geode-sdk
+
+      - name: Build mod for Android
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G Ninja \
+            -DGEODE_SDK="${{ github.workspace }}/geode-sdk" \
+            -DGEODE_TARGET_PLATFORM=Android
+          ninja
+
+      - name: Upload Android mod
+        uses: actions/upload-artifact@v4
+        with:
+          name: disable-glow-mod-android
+          path: build/*.geode
