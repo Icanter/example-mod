@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "id": "disable.glow.orb.portal",
   "name": "Disable Glow",
-  "developer": "YourName",
+  "developer": "Lizzcz",
   "description": "Disables circle glow when clicking orbs or touching portals."
 }
