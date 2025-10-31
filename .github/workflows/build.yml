@@ -1,4 +1,4 @@
-name: Build Geode Mod
+name: Build Geode Mod (All Platforms)
 
 on:
   push:
@@ -9,6 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        platform: [Windows, Android, Mac, iOS]
 
     steps:
       - name: Checkout mod repository
@@ -23,15 +27,17 @@ jobs:
         run: |
           git clone --depth=1 https://github.com/geode-sdk/geode.git geode-sdk
 
-      - name: Build the mod
+      - name: Build for ${{ matrix.platform }}
         run: |
           mkdir build
           cd build
-          cmake .. -G Ninja -DGEODE_SDK="${{ github.workspace }}/geode-sdk"
+          cmake .. -G Ninja \
+            -DGEODE_SDK="${{ github.workspace }}/geode-sdk" \
+            -DGEODE_TARGET_PLATFORM=${{ matrix.platform }}
           ninja
 
-      - name: Upload built mod
+      - name: Upload mod artifact (${{ matrix.platform }})
         uses: actions/upload-artifact@v4
         with:
-          name: disable-glow-mod
+          name: disable-glow-mod-${{ matrix.platform }}
           path: build/*.geode
