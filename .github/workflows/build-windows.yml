@@ -14,24 +14,28 @@ jobs:
       - name: Checkout mod repository
         uses: actions/checkout@v4
 
-      - name: Install build tools
+      - name: Install dependencies
         run: |
           choco install cmake ninja git -y
-          refreshenv
 
       - name: Clone Geode SDK
         run: |
           git clone --depth=1 https://github.com/geode-sdk/geode.git geode-sdk
 
-      - name: Build mod for Windows
+      - name: Configure with MSVC
         run: |
           mkdir build
           cd build
-          cmake .. -G Ninja -DGEODE_SDK="${{ github.workspace }}\\geode-sdk" -DGEODE_TARGET_PLATFORM=Windows
-          ninja
+          cmake .. -G "Visual Studio 17 2022" -A x64 `
+            -DGEODE_SDK="${{ github.workspace }}\\geode-sdk" `
+            -DGEODE_TARGET_PLATFORM=Win32
+
+      - name: Build mod (Release)
+        run: |
+          cmake --build build --config Release
 
       - name: Upload Windows mod
         uses: actions/upload-artifact@v4
         with:
           name: disable-glow-mod-windows
-          path: build/*.geode
+          path: build/Release/*.geode
