@@ -23,9 +23,9 @@ jobs:
           git clone --depth=1 https://github.com/geode-sdk/geode.git geode-sdk
 
       - name: Download Geode CLI
-  shell: pwsh
-  run: |
-    Invoke-WebRequest -Uri "https://github.com/geode-sdk/cli/releases/latest/download/geode-windows-x64.exe" -OutFile "geode-sdk/geode.exe"
+        shell: pwsh
+        run: |
+        Invoke-WebRequest -Uri    "https://github.com/geode-sdk/cli/releases/latest/download/geode-windows-x64.exe" -OutFile "geode-sdk/geode.exe"
 
       - name: Install Geode SDK binaries
         shell: pwsh
