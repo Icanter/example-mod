@@ -1,0 +1,37 @@
+name: Build Geode Mod (Windows)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout mod repository
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          choco install cmake ninja git -y
+          refreshenv
+
+      - name: Clone Geode SDK
+        run: |
+          git clone --depth=1 https://github.com/geode-sdk/geode.git geode-sdk
+
+      - name: Build mod for Windows
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G Ninja -DGEODE_SDK="${{ github.workspace }}\\geode-sdk" -DGEODE_TARGET_PLATFORM=Windows
+          ninja
+
+      - name: Upload Windows mod
+        uses: actions/upload-artifact@v4
+        with:
+          name: disable-glow-mod-windows
+          path: build/*.geode
