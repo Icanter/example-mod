@@ -12,18 +12,22 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y cmake ninja-build git
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build git
 
       - name: Clone Geode SDK
         run: |
-          git clone --depth=1 https://github.com/geode-sdk/geode.git
-          mkdir build && cd build
-          cmake .. -G Ninja -DGEODE_SDK=$(pwd)/../geode
+          git clone --depth=1 https://github.com/geode-sdk/geode.git geode-sdk
+
+      - name: Build mod
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G Ninja -DGEODE_SDK="$(pwd)/../geode-sdk"
           ninja
 
       - name: Upload built mod
